@@ -44,7 +44,7 @@ async def handle_prediction(image: UploadFile = File(..., description="File gamb
     """
     Endpoint ini menerima gambar dan mengembalikan diagnosis dari model ahli.
     """
-    if not image.content_type.startswith("image/"):
+    if not (image.content_type and image.content_type.startswith("image/")):
         raise HTTPException(status_code=400, detail="Tipe file tidak valid. Harap unggah gambar.")
 
     image_bytes = await image.read()
