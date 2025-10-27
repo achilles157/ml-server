@@ -5,11 +5,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from .services import prediction_service
 from .models import schemas
+import os
+import json
 import firebase_admin
 from firebase_admin import credentials, auth
 
-cred = credentials.Certificate("./paddypadi-firebase-adminsdk.json")
-firebase_admin.initialize_app(cred)
+# Ambil kredensial dari environment variable
+firebase_creds_json = os.getenv('FIREBASE_CREDENTIALS_JSON')
+if firebase_creds_json:
+    firebase_creds_dict = json.loads(firebase_creds_json)
+    cred = credentials.Certificate(firebase_creds_dict)
+    firebase_admin.initialize_app(cred)
+else:
+    print("WARNING: FIREBASE_CREDENTIALS_JSON environment variable not set.")
+    # Mungkin tambahkan fallback atau raise error jika diperlukan
 
 # Konteks manager untuk memuat model saat startup
 @asynccontextmanager
