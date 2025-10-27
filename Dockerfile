@@ -1,5 +1,3 @@
-# Dockerfile di dalam folder functions/
-
 # Gunakan image Python resmi sebagai base
 FROM python:3.9-slim-buster
 
@@ -10,12 +8,14 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy semua kode aplikasi Anda (termasuk model .tflite)
-COPY . .
+# Copy semua kode aplikasi Anda (termasuk model .tflite dan service account key)
+# Pastikan struktur direktori di container sesuai
+COPY app ./app
+COPY ml_models ./ml_models
 
-# Variabel lingkungan untuk port. Cloud Run akan mengeset PORT secara otomatis
-ENV PORT=8080
+# Expose port yang akan digunakan Railway
+EXPOSE $PORT
 
-# Perintah untuk menjalankan aplikasi Anda
-# Uvicorn adalah ASGI server untuk FastAPI
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+# Perintah untuk menjalankan aplikasi Anda menggunakan Uvicorn
+# Sesuaikan path ke main:app sesuai struktur folder Anda
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "$PORT"]
