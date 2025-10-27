@@ -18,4 +18,4 @@ EXPOSE $PORT
 
 # Perintah untuk menjalankan aplikasi Anda menggunakan Uvicorn
 # Sesuaikan path ke main:app sesuai struktur folder Anda
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "$PORT"]
+CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT
