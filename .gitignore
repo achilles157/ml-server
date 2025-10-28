@@ -1,3 +1,5 @@
 paddypadi-firebase-adminsdk.json
 .firebasearc
 firebase.json
+set_admin.py
+functions/

@@ -1,5 +1,3 @@
-# server/app/main.py
-
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -10,7 +8,6 @@ import json
 import firebase_admin
 from firebase_admin import credentials, auth
 
-# Ambil kredensial dari environment variable
 firebase_creds_json = os.getenv('FIREBASE_CREDENTIALS_JSON')
 if firebase_creds_json:
     firebase_creds_dict = json.loads(firebase_creds_json)
@@ -18,25 +15,20 @@ if firebase_creds_json:
     firebase_admin.initialize_app(cred)
 else:
     print("WARNING: FIREBASE_CREDENTIALS_JSON environment variable not set.")
-    # Mungkin tambahkan fallback atau raise error jika diperlukan
 
-# Konteks manager untuk memuat model saat startup
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Kode ini berjalan saat server dimulai
     prediction_service.load_model()
     yield
-    # Kode ini berjalan saat server dimatikan (jika ada cleanup)
 
 app = FastAPI(
     title="PaddyPadi Backend API",
-    lifespan=lifespan # Menjalankan fungsi load_model saat startup
+    lifespan=lifespan 
 )
 
-# Mengizinkan frontend React untuk mengakses API ini
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Ganti dengan URL frontend Anda untuk produksi
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -62,16 +54,13 @@ async def handle_prediction(image: UploadFile = File(..., description="File gamb
         result = await prediction_service.predict(image_bytes)
         return result
     except Exception as e:
-        # Menangani error yang mungkin terjadi selama prediksi
         raise HTTPException(status_code=500, detail=f"Terjadi error saat prediksi: {str(e)}")
     
 @app.post("/set-admin/{email}")
 def set_admin_role(email: str):
     """Endpoint aman untuk menjadikan user sebagai admin."""
-    # Tambahkan logika untuk memastikan hanya admin lain yang bisa memanggil ini
     try:
         user = auth.get_user_by_email(email)
-        # Set custom claim 'admin' menjadi true
         auth.set_custom_user_claims(user.uid, {'admin': True})
         return {"message": f"User {email} telah dijadikan admin."}
     except Exception as e:
