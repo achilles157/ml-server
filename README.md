@@ -1,4 +1,4 @@
-# PaddyPadi - Model Ahli Backend (FastAPI / [Nama Framework Anda])
+# PaddyPadi - Model Ahli Backend (FastAPI)
 
 Repositori ini berisi implementasi backend untuk Model Ahli yang digunakan oleh aplikasi _frontend_ [PaddyPadi 🌱](https://github.com/nama-pengguna-anda/paddypadi) (link ke repo frontend Anda). Backend ini bertanggung jawab untuk menerima gambar daun padi dan mengembalikan prediksi penyakit menggunakan model _machine learning_ yang lebih kompleks dan akurat.
 
