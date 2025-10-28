@@ -2,7 +2,6 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from .services import prediction_service
-from .models import schemas
 import os
 import json
 import firebase_admin
@@ -39,12 +38,8 @@ def read_root():
     return {"status": "PaddyPadi API is running"}
 
 @app.post("/predict", 
-          response_model=schemas.PredictionResponse, 
           summary="Prediksi Penyakit Padi")
 async def handle_prediction(image: UploadFile = File(..., description="File gambar daun padi.")):
-    """
-    Endpoint ini menerima gambar dan mengembalikan diagnosis dari model ahli.
-    """
     if not (image.content_type and image.content_type.startswith("image/")):
         raise HTTPException(status_code=400, detail="Tipe file tidak valid. Harap unggah gambar.")
 
@@ -58,7 +53,6 @@ async def handle_prediction(image: UploadFile = File(..., description="File gamb
     
 @app.post("/set-admin/{email}")
 def set_admin_role(email: str):
-    """Endpoint aman untuk menjadikan user sebagai admin."""
     try:
         user = auth.get_user_by_email(email)
         auth.set_custom_user_claims(user.uid, {'admin': True})
